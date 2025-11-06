@@ -1,4 +1,8 @@
-<?php if (session_status() === PHP_SESSION_NONE) { session_start(); } ?>
+<?php
+// Replace direct session_start with include of auth helper
+require_once __DIR__ . '/inc/auth.php';
+ensure_session();
+?>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
   <div class="container">
     <a class="navbar-brand" href="index.php">Neth shopping</a>
@@ -11,6 +15,11 @@
         <li class="nav-item"><a class="nav-link" href="contactus.php">Contact Us</a></li>
         <li class="nav-item"><a class="nav-link" href="cart.php">🛒 Cart</a></li>
         <?php if (!empty($_SESSION['authenticated']) && !empty($_SESSION['user'])): ?>
+          <?php if (is_role('admin')): ?>
+            <li class="nav-item">
+              <a class="nav-link" href="admin.php">Admin</a>
+            </li>
+          <?php endif; ?>
           <li class="nav-item d-flex align-items-center me-2">
             <span class="navbar-text small">Hello, <?php echo htmlspecialchars($_SESSION['user']['first_name'] ?? $_SESSION['user']['username'] ?? 'User'); ?></span>
           </li>

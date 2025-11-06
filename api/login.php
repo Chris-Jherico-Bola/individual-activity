@@ -1,5 +1,8 @@
 <?php
+
 require __DIR__ . '/db.php';
+// include auth helper
+require __DIR__ . '/../inc/auth.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -36,9 +39,9 @@ if (!$user || !password_verify($password, $user['password_hash'])) {
 
 $pdo->prepare('UPDATE users SET last_login_at = NOW() WHERE id = ?')->execute([$user['id']]);
 
-unset($user['password_hash']);
-$_SESSION['user'] = $user;
-$_SESSION['authenticated'] = true;
+// remove password hash from the user array and set session via helper
+if (isset($user['password_hash'])) unset($user['password_hash']);
+login_user_in_session($user);
 
 json_response(['user' => $user, 'token' => base64_encode(random_bytes(24))]);
 

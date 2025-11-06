@@ -1,9 +1,8 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) { session_start(); }
-if (empty($_SESSION['authenticated']) || empty($_SESSION['user'])) {
-  header('Location: index.php?loginRequired=1');
-  exit;
-}
+require_once __DIR__ . '/inc/auth.php';
+ensure_session();
+require_auth();
+require_role('customer');
 ?>
 <!DOCTYPE html>
 <html lang="en">
